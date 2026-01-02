@@ -2,6 +2,8 @@ package com.codingninjas.Foodies.entity;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -44,6 +46,7 @@ public class Customer {
 	@ManyToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinTable(name="customer_restaurants",joinColumns=@JoinColumn(name="customer_id"),inverseJoinColumns=@JoinColumn(name="restaurant_id"))
 	private List<Restaurant> visitedRestaurants;
-	@OneToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+	@OneToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},mappedBy="customer")
+	@JsonIgnore
 	private List<Rating> ratings;
 }

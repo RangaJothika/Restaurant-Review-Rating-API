@@ -55,7 +55,6 @@ public class Rating {
 	private Restaurant restaurant;
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumn(name = "customer_id")
-	@JsonIgnore
 	private Customer customer;
 
 	public Rating() {

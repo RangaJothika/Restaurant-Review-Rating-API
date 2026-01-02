@@ -53,7 +53,7 @@ public class MainController {
 		return mainService.getCustomerRatingGreaterThan(restaurantName,rating);
 	}
 	@GetMapping("/restaurant/{restaurantName}/average")
-	public List<Rating> getAvgRestaurantRating(@PathVariable String restaurantName){
+	public double getAvgRestaurantRating(@PathVariable String restaurantName){
 		return mainService.getAvgResturantRating(restaurantName);
 	}
 }

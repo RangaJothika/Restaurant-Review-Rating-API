@@ -66,7 +66,7 @@ public class Restaurant {
 	@JsonIgnore
 	private List<Rating> ratings;
 	
-	@ManyToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+	@ManyToMany(cascade= {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},mappedBy="visitedRestaurants")
 	@JsonIgnore
 	private List<Customer> customerList;
 }

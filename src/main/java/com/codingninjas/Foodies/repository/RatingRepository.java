@@ -9,6 +9,6 @@ import com.codingninjas.Foodies.entity.Rating;
 
 public interface RatingRepository extends JpaRepository<Rating,Integer>{
 
-	@Query(value="SELECT AVG(r) FROM rating r WHERE r.restaurant.name=?1",nativeQuery=true)
-	List<Rating> getAvgRestaurantRating(String restaurantName);
+	@Query(value="SELECT AVG(r.rating) FROM rating r JOIN restaurant res ON r.restaurant_id = res.id WHERE res.name = ?1", nativeQuery=true)
+	double getAvgRestaurantRating(String restaurantName);
 }

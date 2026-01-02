@@ -26,23 +26,57 @@ public class MainService {
 
 	public void saveCustomer(Customer customer) {
 		// TODO Auto-generated method stub
+		List<Restaurant> restaurantList = customer.getVisitedRestaurants();
+		List<Restaurant> newRestaurantList = new ArrayList<>();
+		for (Restaurant res : restaurantList) {
+			Restaurant restaurant = restaurantRepository.findById(res.getId()).get();
+			newRestaurantList.add(restaurant);// we need to manually do this,or hibernate tries to attach a new record
+												// eventho same exists because it cant fetch itself wo us specifing
+												// findbyid()
+		}
+		customer.setVisitedRestaurants(newRestaurantList);
 		customerRepository.save(customer);
 	}
 
-	public void saveCustRatingForRestaurant(Rating rating, Integer customerId, String restaurantName) {
+	public void saveCustRatingForRestaurant(Rating rating, Integer customerId, String restaurantName) {// when user
+																										// clicks to
+																										// send rating
+																										// only rating
+																										// is in
+																										// reqbody,no
+																										// custoemrs or
+																										// restaurant
+																										// fields with
+																										// ids are there
+																										// so we set
+																										// them here and
+																										// in the url
+																										// the they get
+																										// attached from
+																										// frontend so
+																										// we need to
+																										// set them in
+																										// feilds based
+																										// on them and
+																										// then progress
+																										// further
 		// TODO Auto-generated method stub
 		Customer customer = customerRepository.findById(customerId)
 				.orElseThrow(() -> new RuntimeException("Customer not found"));
 
 		Restaurant restaurant = restaurantRepository.findByName(restaurantName);
-		customer.getVisitedRestaurants().add(restaurant);
+		if (!customer.getVisitedRestaurants().contains(restaurant))
+			customer.getVisitedRestaurants().add(restaurant);// this and the below lines are auto does in db but in
+		// mem(session (cache)) they need to be manually done or if
+		// we get data from in mem session cache wo thsi we get
+		// wrong resuts
 		customer.getRatings().add(rating);
-		customerRepository.save(customer);
+		restaurant.getRatings().add(rating);
+//		customerRepository.save(customer);the add(rating) lines itself update in mem so its not needed and the ratingsave itself update the db so this save cust.restaurant is nto needed
+//		restaurantRepository.save(restaurant);
 		rating.setCustomer(customer);
 		rating.setRestaurant(restaurant);
-		ratingRepository.save(rating); // built-in method//no need to save rating of customer and restaurant they are
-										// done auto as we have the mapped annotation to them with cascadetypes
-										// respectively and fk in rating table will also get updated crtly
+		ratingRepository.save(rating);
 	}
 
 	public List<Rating> getAllRatings() {
@@ -57,16 +91,16 @@ public class MainService {
 
 	public List<Customer> findByVisitedRestaurants(String restaurantName) {
 		// TODO Auto-generated method stub
-		Restaurant restaurant=restaurantRepository.findByName(restaurantName);
+		Restaurant restaurant = restaurantRepository.findByName(restaurantName);
 		return customerRepository.findByVisitedRestaurants(restaurant);
 	}
 
 	public List<Customer> getCustomerRatingGreaterThan(String restaurantName, double rating) {
 		// TODO Auto-generated method stub
-		return customerRepository.getCustomerRatingGreaterThan(restaurantName,rating);
+		return customerRepository.getCustomerRatingGreaterThan(restaurantName, rating);
 	}
 
-	public List<Rating> getAvgResturantRating(String restaurantName) {
+	public double getAvgResturantRating(String restaurantName) {
 		// TODO Auto-generated method stub
 		return ratingRepository.getAvgRestaurantRating(restaurantName);
 	}
